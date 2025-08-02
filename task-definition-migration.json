@@ -1,0 +1,42 @@
+{
+  "family": "task-def-bia-migration",
+  "networkMode": "bridge",
+  "requiresCompatibilities": ["EC2"],
+  "executionRoleArn": "arn:aws:iam::127854693176:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "bia-migration",
+      "image": "127854693176.dkr.ecr.us-east-1.amazonaws.com/bia:latest",
+      "cpu": 512,
+      "memoryReservation": 256,
+      "essential": true,
+      "environment": [
+        {
+          "name": "DB_PWD",
+          "value": "Vx0w9nGrCvU7t58HtWVu"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "bia.cudy8a8a20uc.us-east-1.rds.amazonaws.com"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "5432"
+        },
+        {
+          "name": "DB_USER",
+          "value": "postgres"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/task-def-bia-migration",
+          "awslogs-create-group": "true",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "family": "task-def-bia",
+  "networkMode": "bridge",
+  "requiresCompatibilities": ["EC2"],
+  "executionRoleArn": "arn:aws:iam::127854693176:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "bia",
+      "image": "127854693176.dkr.ecr.us-east-1.amazonaws.com/bia:latest",
+      "cpu": 1024,
+      "memoryReservation": 410,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 80,
+          "protocol": "tcp",
+          "name": "porta-80",
+          "appProtocol": "http"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DB_PWD",
+          "value": "Vx0w9nGrCvU7t58HtWVu"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "bia.cudy8a8a20uc.us-east-1.rds.amazonaws.com"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "5432"
+        },
+        {
+          "name": "DB_USER",
+          "value": "postgres"
+        }
+      ],
+      "command": [
+        "sh", "-c", "npx sequelize db:migrate && npm start"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/task-def-bia",
+          "awslogs-create-group": "true",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

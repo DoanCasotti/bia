@@ -1,0 +1,38 @@
+FROM public.ecr.aws/docker/library/node:22-slim
+
+# Upgrade npm
+RUN npm install -g npm@latest
+
+# Instalar curl para health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Definir diretório de trabalho
+WORKDIR /usr/src/app
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install --loglevel=error
+
+# Copiar código da aplicação
+COPY . .
+
+# Copiar configuração específica para migrations
+COPY config/database-migration.js config/
+
+# Instalar dependências do client
+WORKDIR /usr/src/app/client
+RUN npm install --loglevel=error
+
+# Build do client
+RUN npm run build
+
+# Voltar para o diretório principal
+WORKDIR /usr/src/app
+
+# Expor porta
+EXPOSE 8080
+
+# Comando padrão
+CMD ["npm", "start"]
